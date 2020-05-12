@@ -1,4 +1,5 @@
 import sanic
+import datetime
 
 app = sanic.Sanic(name="PartyServer")
 
@@ -7,19 +8,21 @@ app = sanic.Sanic(name="PartyServer")
 async def token(request: sanic.request.Request) -> sanic.response.HTTPResponse:
     return sanic.response.json(
         {
-            "access_token": "eg1~ACCESS_TOKEN",
+            "access_token": "ACCESS_TOKEN",
             "expires_in": 28800,
-            "expires_at": "9999-12-31T23:59:59.999Z",
+            "expires_at": datetime.datetime.now() + datetime.timedelta(hours=8),
             "token_type": "bearer",
             "refresh_token": "REFRESH_TOKEN",
-            "refresh_expires": 28800,
-            "refresh_expires_at": "9999-12-31T23:59:59.999Z",
+            "refresh_expires": 86400,
+            "refresh_expires_at": datetime.datetime.now() + datetime.timedelta(hours=24),
             "account_id": "ACCOUNT_ID",
             "client_id": "CLIENT_ID",
             "internal_client": True,
             "client_service": "fortnite",
+            "displayName": "Oli",
             "app": "fortnite",
-            "in_app_id": "ACCOUNT_ID"
+            "in_app_id": "ACCOUNT_ID",
+            "device_id": "DEVICE_ID"
         },
         status=200
     )
@@ -46,8 +49,8 @@ async def account_lookup(request: sanic.request.Request, account_id) -> sanic.re
     return sanic.response.json(
         {
             "id": account_id,
-            "displayName": "PARTYSERVER",
-            "name": "PARTYSERVER",
+            "displayName": "Oli",
+            "name": 'PARTYSERVER',
             "email": "PARTYSERVER@gmail.com",
             "failedLoginAttempts": 0,
             "lastLogin": "2020-05-11T21:14:12.698Z",
