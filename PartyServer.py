@@ -77,7 +77,7 @@ async def external_auths(request: sanic.request.Request, account_id) -> sanic.re
 
 
 @app.route("/fortnite/api/game/v2/tryPlayOnPlatform/account/<account_id>", methods=["POST", ])
-async def platform_check(request: sanic.request.Request, account_id) -> sanic.response.HTTPResponse:
+async def platform_check(request: sanic.request.Request, account_id: str) -> sanic.response.HTTPResponse:
     return sanic.response.text(
         True,
         status=200
