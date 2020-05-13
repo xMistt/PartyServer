@@ -2,7 +2,7 @@
 
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019-2020
+Copyright Oli 2020
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -21,10 +21,11 @@ of the Software. Any license notice or attribution required by
 the License must also include this Commons Clause License
 Condition notice.
 
-Software: PartyBot
+Software: PartyServer
 
 License: Apache 2.0
 """
+
 import sanic
 import datetime
 
