@@ -26,8 +26,10 @@ Software: PartyServer
 License: Apache 2.0
 """
 
-import sanic
 import datetime
+import sys
+
+import sanic
 
 
 def to_fortnite_iso(time: datetime.datetime) -> str:
@@ -197,7 +199,8 @@ async def commands(request: sanic.request.Request, account_id: str, command: str
         )
 
     else:
-        raise ValueError("Command you haven't setup.")
+        raise ValueError(f"Command you haven't setup: {request.url}.")
+        sys.exit()
 
 
 app.run(host="0.0.0.0", port="80")
