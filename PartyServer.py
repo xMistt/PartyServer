@@ -29,6 +29,11 @@ License: Apache 2.0
 import sanic
 import datetime
 
+
+def to_fortnite_iso(time: datetime.datetime) -> str:
+    return f'{str(time)[slice(23)]}Z'.replace(' ', 'T')
+
+
 app = sanic.Sanic(name="PartyServer")
 
 
@@ -38,11 +43,11 @@ async def token(request: sanic.request.Request) -> sanic.response.HTTPResponse:
         {
             "access_token": "ACCESS_TOKEN",
             "expires_in": 28800,
-            "expires_at": datetime.datetime.now() + datetime.timedelta(hours=8),
+            "expires_at": to_fortnite_iso(datetime.datetime.now() + datetime.timedelta(hours=8)),
             "token_type": "bearer",
             "refresh_token": "REFRESH_TOKEN",
             "refresh_expires": 86400,
-            "refresh_expires_at": datetime.datetime.now() + datetime.timedelta(hours=24),
+            "refresh_expires_at": to_fortnite_iso(datetime.datetime.now() + datetime.timedelta(hours=24)),
             "account_id": "ACCOUNT_ID",
             "client_id": "CLIENT_ID",
             "internal_client": True,
@@ -73,7 +78,7 @@ async def kill_token(request: sanic.request.Request) -> sanic.response.HTTPRespo
 
 
 @app.route("/account/api/public/account/<account_id>")
-async def account_lookup(request: sanic.request.Request, account_id) -> sanic.response.HTTPResponse:
+async def account_lookup(request: sanic.request.Request, account_id: str) -> sanic.response.HTTPResponse:
     return sanic.response.json(
         {
             "id": account_id,
@@ -100,7 +105,7 @@ async def account_lookup(request: sanic.request.Request, account_id) -> sanic.re
 
 
 @app.route("/account/api/public/account/<account_id>/externalAuths")
-async def external_auths(request: sanic.request.Request, account_id) -> sanic.response.HTTPResponse:
+async def external_auths(request: sanic.request.Request, account_id: str) -> sanic.response.HTTPResponse:
     return sanic.response.json(
         [],
         status=200
@@ -152,11 +157,47 @@ async def enabled_features(request: sanic.request.Request) -> sanic.response.HTT
 
 
 @app.route("fortnite/api/cloudstorage/user/<account_id>")
-async def cloudstorage(request: sanic.request.Request, account_id) -> sanic.response.HTTPResponse:
+async def cloudstorage(request: sanic.request.Request, account_id: str) -> sanic.response.HTTPResponse:
     return sanic.response.json(
         [],
         status=200
     )
+
+
+@app.route("fortnite/api/game/v2/profile/<account_id>/client/<command>", methods=["POST", ])
+async def commands(request: sanic.request.Request, account_id: str, command: str) -> sanic.response.HTTPResponse:
+    print(request.args)
+
+    response = {
+        "profileRevision": 1,
+        "profileId": request.args['profileId'][0],
+        "profileChangesBaseRevision": 1,
+        "profileChanges": [],
+        "profileCommandRevision": 1,
+        "serverTime": to_fortnite_iso(datetime.datetime.now()),
+        "responseVersion": 1
+    }
+
+    if command == "RefreshExpeditions":
+        return sanic.response.json(
+            response,
+            status=200
+        )
+
+    elif command == "QueryProfile":
+        return sanic.response.json(
+            response,
+            status=200
+        )
+
+    elif command == "ClientQuestLogin":
+        return sanic.response.json(
+            response,
+            status=200
+        )
+
+    else:
+        raise ValueError("Command you haven't setup.")
 
 
 app.run(host="0.0.0.0", port="80")
